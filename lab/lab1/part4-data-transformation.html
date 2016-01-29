@@ -24,20 +24,25 @@
 
     ## Introduction
 
-    We're going to explore Philadelphia Bike Share locations. We will be using data from OpenDataPhilly (https://www.opendataphilly.org/dataset/bike-share-stations).
+    We're going to explore Philadelphia Bike Share locations. We will be using data from OpenDataPhilly
+    (https://www.opendataphilly.org/dataset/bike-share-stations).
 
-    We have converted the data from OpenDataPhilly into an array of arrays similar to part3. However, our arrays for bike share data have an extra data point:
+    We have converted the data from OpenDataPhilly into an array of arrays similar to part3.
+    However, our arrays for bike share data have an extra data point:
 
     1. lat
     2. lng
     3. label
     4. number of bike share docks at the station
 
-    This data is assigned to variable "data" in the code below. You can view the entire array in the part4-data-clean.js file.
+    This data is assigned to variable "data" in the code below.
+    You can view the entire array in the part4-data-clean.js file.
 
     ## Data Processing
 
-    We are only interested in bike share stations with more than 20 docks. Programmatically create a new array, variable "dataFiltered" that only contains locations with more than 20 docks.
+    We are only interested in bike share stations with more than 20 docks.
+    Programmatically create a new array, variable "dataFiltered" that only contains
+    locations with more than 20 docks.
 
     ## Add Markers to the map
 
@@ -45,22 +50,68 @@
 
     ## Working with Dirty Data
 
-    Often, our data will contain inconsistencies that can cause problems in our code. In the code below, switch out "bikeArrayClean" with "bikeArrayDirty". If you reload your map now, the markers should be gone. You can review the dirty data in part4-data-dirty.js.
+    Often, our data will contain inconsistencies that can cause problems in our code.
+    In the code below, switch out "bikeArrayClean" with "bikeArrayDirty". If you reload your map now,
+    the markers should be gone. You can review the dirty data in part4-data-dirty.js.
 
     Without modifying part4-data-dirty.js, change your code to account for the dirty data.
 
     ===================== */
+//  Start code to filter data
 
-    var data = bikeArrayClean;
+    var data = bikeArrayDirty;
 
-    /* =====================
+    // create new empty list
+    var bikeFilter = [];
+    //  run loop to filter out rows that have greater than 20 bikeshare stations
+    var bike = [];
 
-    Start code to filter data
+    var bikeOrder = [];
 
-    ===================== */
+    for(i=0;i<data.length;i++){
+          if(data[i].length==4){
+            bike.push(data[i]);
+
+        }
+      }
+
+    // run loop to reverse lat long coordinates in rows
+    console.log(bike);
+    for(i=0;i<bike.length;i++){
+        var swapArrayElements = function(arr, indexA, indexB, indexD) {
+        var temp = arr[i][indexA];
+        var A = arr[i][indexB];
+        var B = temp;
+        arr[i][indexA] = Number.parseFloat(A);
+        arr[i][indexB] = Number.parseFloat(B);
+        var tempD = arr[i][indexD]
+        tempD.split().length = 2;
+        arr[i][indexD] = Number.parseFloat(tempD);
+        }
+        swapArrayElements(bike,0,1,3);
+
+    }
 
 
+    var bikeFilter = [];
+// remove stations
+    for(i=0;i< bike.length ;i++){
+      if(bike[i][3]>20){
+        bikeFilter.push(bike[i]);
+      }
+    }
 
+console.log(bikeFilter);
+    /*for (var i = 0; i < bikeFilter.length; i++) {
+        if (bikeFilter[i] !== 'undefined' || bikeFilter[i] !== null || bikeFilter[i] !== "") {
+          bikenoNULL.push(bikeFilter[i]);
+        }
+      }
+
+      board = new Array();
+      rows = 3;
+      for (var i = 0; i < rows; i++)
+          board[i] = new Array('.', '.', '.');
     /* =====================
 
     End code to filter data
@@ -69,7 +120,7 @@
 
     var map = L.map('map', {
       center: [39.9522, -75.1639],
-      zoom: 14
+      zoom: 13
     });
 
     var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
@@ -80,12 +131,17 @@
       ext: 'png'
     }).addTo(map);
 
+
+
     /* =====================
 
     Start code to add markers to map
 
     ===================== */
 
+    for(i=0;i<bikeFilter.length;i++){
+      L.marker(bikeFilter[i]).addTo(map).bindPopup(bikeFilter[i][2]).openPopup();
+    }
 
 
     /* =====================
