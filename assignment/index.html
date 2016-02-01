@@ -57,11 +57,68 @@
       Start code
 
       ===================== */
+      var data =healthCenters;
 
-      var jsonToCsv = function(json) { console.log(json); };
 
 
-      var addMarkers = function(map) {};
+      key = Object.keys(data[0]);
+      console.log(key);
+
+     for (var i = 0;  i < data.length;  i = i + 1) {  // start at 0, go until we reach data.length - 1, make i equal its successor after every run
+        var values = [];  // this is empty before each new loop on an object
+        for (key in data[i]) {  // start up another loop, this time looping through data[i] (for whatever i is, here); the variable key is just one of the keys in data[i]
+          values.push(data[i][key]);
+        }
+        console.log(values)
+        if(data[i].ZIP >= 19140 && data[i].ZIP <= 19149 ){
+
+        L.marker([data[i].LAT, data[i].LNG],{ draggable: true}).addTo(map).bindPopup(data[i].NAME).openPopup();
+      }
+      }
+
+
+
+      function Json2CSV(objArray)
+      {
+      var getKeys = function(obj){
+      var keys = [];
+      for(var key in obj){
+      keys.push(key);
+      }
+      return keys.join();
+      }, array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray
+      , str = ''
+      ;
+
+        for (var i = 0; i < array.length; i++) {
+          var line = '';
+          for (var index in array[i]) {
+            if(line != '') line += ','
+
+            line += array[i][index];
+          }
+
+          str += line + '\r\n';
+        }
+
+        str = getKeys(objArray[0]) + '\r\n' + str;
+
+        var a = document.createElement('a');
+        var blob = new Blob([str], {'type':'application\/octet-stream'});
+        a.href = window.URL.createObjectURL(blob);
+        a.download = 'export.csv';
+        a.click();
+        return true;
+      }
+
+      var r = confirm("Would like to download to CSV? If yes, click OK. If no, click Cancel");
+      if (r == true) {
+          x = Json2CSV(data);
+        } else {
+          x = "You clicked Cancel";
+        }
+
+
 
       /* =====================
 
@@ -70,8 +127,8 @@
       ===================== */
 
 
-      jsonToCsv(healthCenters);
-      addMarkers(map);
+//      Json2CSV(healthCenters);
+//      addMarkers(map);
     </script>
     <!--Your code ends here-->
   </body>
